@@ -68,10 +68,9 @@ class App:
         self.btn_buscar = Button(self.ventana, text= "Buscar", command=lambda: self.buscar_controller("Eliminar"))
         self.btn_buscar.pack(pady=5)
         
-        
 
-        self.btn_eliminar= Button(self.ventana, text= "Eliminar", state="disabled", command=lambda: {self.eliminar_controller(), self.eliminar_view()}).pack(pady=5)
-        
+        self.btn_eliminar= Button(self.ventana, text= "Eliminar", state="disabled", command=lambda: {self.eliminar_controller(), self.eliminar_view()})
+        self.btn_eliminar.pack(pady=5)
         Button(self.ventana, text="Regresar", command=self.menu_acciones).pack(pady=5)
 
     def modificar_view(self):
@@ -131,9 +130,12 @@ class App:
             elif tipo_accion == "Modificar":
                 self.btn_modificar.config(state="disabled")
 
-
-
-
+    def confirmar_eliminar(self, tipo):
+        resp=messagebox.askquestion(title="... ¡Atención!...", message=f"¿Desea {tipo} el registro?...")
+        if resp == "yes":
+            return True
+        else:
+            return False
 
 
 
@@ -145,7 +147,6 @@ class App:
     
     def insertar_controller(self):
         coche1 = coches.Coches(self.marca.get(), self.color.get(), self.modelo.get(), self.velocidad.get(), self.potencia.get(), self.asientos.get())                    
-        coche1 = cochesBD.cochesBD(self.marca.get(), self.color.get(), self.modelo.get(), self.velocidad.get(), self.potencia.get(), self.asientos.get())
         respuesta = coche1.insertar()
         self.respuesta_sql(respuesta)
         del coche1
@@ -153,20 +154,23 @@ class App:
 
     def eliminar_controller(self):
         id=self.id.get()
-        respuesta = cochesBD.cochesBD.eliminar(id)
+        resp=self.confirmar_eliminar("eliminar")
+        if resp:
+            respuesta = coches.Coches.eliminar(id)
+        else:
+            respuesta = False
         self.respuesta_sql(respuesta)
-        # self.eliminar_view()
-
+ 
     def modificar_controller(self):
         id=self.id.get()                     
-        coche1 = cochesBD.cochesBD(self.marca.get(), self.color.get(), self.modelo.get(), self.velocidad.get(), self.potencia.get(), self.asientos.get())
+        coche1 = coches.Coches(self.marca.get(), self.color.get(), self.modelo.get(), self.velocidad.get(), self.potencia.get(), self.asientos.get())
         respuesta = coche1.actualizar(id)
         self.respuesta_sql(respuesta)
         del coche1
         # self.modificar_view()
 
     def consultar_controller(self, filas):
-        registros=cochesBD.cochesBD.consultar()
+        registros=coches.Coches.consultar()
         if len(registros) > 0:
             numero_coches=1
             for fila in registros:
@@ -179,9 +183,9 @@ class App:
 
     def buscar_controller(self,tipo_accion):
         id=self.id.get()
-        coche1 = cochesBD.cochesBD.buscar(id)
+        coche1 = coches.Coches.buscar(id)
         if len(coche1)>0:
-            messagebox.showinfo(title="...El registro fue encontrado...",message=f"El registro fue encontrado con exito, {tipo_accion}!...")
+            messagebox.showinfo(title="...El registro fue encontrado...",message=f"El registro fue encontrado con exito, se puede {tipo_accion}!...")
             self.cambiar_estado_btn(True, tipo_accion)
             #if tipo_accion == "Modificar":
 
