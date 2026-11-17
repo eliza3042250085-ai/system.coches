@@ -1,12 +1,12 @@
 from coches import coches
 from tkinter import *
-from tkinter import messagebox
+from tkinter import messagebox, StringVar
 
 class App:
     def __init__(self, ventana):
         self.ventana = ventana
         self.ventana.title("Gestion de coches")
-        self.ventana.geometry("600x600")
+        self.ventana.geometry("600x700")
         self.ventana.resizable(0,0)
         self.main()
 
@@ -82,32 +82,52 @@ class App:
         self.id.focus()
         self.id.pack(pady=5)
 
+        #nuevo
+        self.btn_buscar = Button(self.ventana, text= "Buscar", command=lambda: self.buscar_controller("Modificar"))
+        self.btn_buscar.pack(pady=5)
+
+        # Nuevo
+        # Variables asociadas a los campos
+        self.var_marca=StringVar()
+        self.var_color=StringVar()
+        self.var_modelo=StringVar()
+        self.var_velocidad=StringVar()
+        self.var_potencia=StringVar()
+        self.var_asientos=StringVar()
+
+
+
         Label(self.ventana, text="Nueva Marca: ").pack(pady=10)
-        self.marca = Entry(self.ventana)
+        self.marca = Entry(self.ventana, textvariable=self.var_marca)
         self.marca.pack(pady=5)
 
         Label(self.ventana, text="Nuevo color: ").pack(pady=10)
-        self.color = Entry(self.ventana)
+        self.color = Entry(self.ventana, textvariable=self.var_color)
         self.color.pack(pady=5)
 
         Label(self.ventana, text="Nuevo modelo: ").pack(pady=10)
-        self.modelo = Entry(self.ventana)
+        self.modelo = Entry(self.ventana,textvariable=self.var_modelo)
         self.modelo.pack(pady=5)
 
         Label(self.ventana, text="Nueva velocidad: ").pack(pady=10)
-        self.velocidad = Entry(self.ventana)
+        self.velocidad = Entry(self.ventana,textvariable=self.var_velocidad)
         self.velocidad.pack(pady=5)
 
         Label(self.ventana, text="Nueva potencia: ").pack(pady=10)
-        self.potencia = Entry(self.ventana)
+        self.potencia = Entry(self.ventana, textvariable=self.var_potencia)
         self.potencia.pack(pady=5)
 
         Label(self.ventana, text="Nuevos asientos: ").pack(pady=10)
-        self.asientos = Entry(self.ventana)
+        self.asientos = Entry(self.ventana, textvariable=self.var_asientos)
         self.asientos.pack(pady=5)
 
-        Button(self.ventana, text="Guardar", command=lambda: {self.modificar_controller(), self.modificar_view()}).pack(pady=5)
-        Button(self.ventana, text= "Regresar", command=self.menu_acciones).pack(pady=5)
+        #Nuevo en cada campo: textvariable=self.var_marca
+
+        #Nuevo
+        self.btn_modificar= Button(self.ventana, text= "Modificar", state="disabled", command=lambda: {self.modificar_controller(), self.modificar_view()})
+        self.btn_modificar.pack(pady=5)
+        Button(self.ventana, text="Regresar", command=self.menu_acciones).pack(pady=5)
+
 
     def consultar_view(self):
         self.borrarPantalla()
@@ -187,10 +207,17 @@ class App:
         if len(coche1)>0:
             messagebox.showinfo(title="...El registro fue encontrado...",message=f"El registro fue encontrado con exito, se puede {tipo_accion}!...")
             self.cambiar_estado_btn(True, tipo_accion)
-            #if tipo_accion == "Modificar":
+            #Nuevo
+            if tipo_accion == "modificar":
+                self.var_marca.set(coche1[0][1])
+                self.var_color.set(coche1[0][2])
+                self.var_modelo.set(coche1[0][3])
+                self.var_velocidad.set(coche1[0][4])
+                self.var_potencia.set(coche1[0][5])
+                self.var_asientos.set(coche1[0][6])               
 
         else:
-            messagebox.showerror(title="... ¡ Verifica por favor ! ...", message=f"El registro no fue encontrado, {tipo_accion}!...")
+            messagebox.showerror(title="... ¡ Verifica por favor ! ...", message=f"El registro no fue encontrado, no se puede {tipo_accion}!...")
             self.cambiar_estado_btn(False, tipo_accion)
 
 
