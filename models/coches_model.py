@@ -2,7 +2,7 @@ import sys, os
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 from conexionBD import conexion, cursor
-class Coches:
+class CochesModel:
     def __init__(self,marca,color,modelo,velocidad,potencia,asientos ):
         self._marca = marca
         self._color = color
